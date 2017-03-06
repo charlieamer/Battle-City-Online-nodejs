@@ -1,11 +1,12 @@
+import { IRenderer } from './irenderer';
 // Anything that could be rendered on screen (basically only entity extends this interface)
-export interface Renderable {
+export interface IRenderable {
     // Update logic
     update();
     // Do transforms on canvas before rendering
-    prepareRender(canvas: CanvasRenderingContext2D);
+    prepareRender(renderer: IRenderer);
     // Draw the element on canvas
-    render(canvas: CanvasRenderingContext2D);
+    render(renderer: IRenderer);
     // Cleanup renderer after rendering (e.g. cleaning up transformations)
-    cleanRender(canvas: CanvasRenderingContext2D);
+    cleanRender(renderer: IRenderer);
 }

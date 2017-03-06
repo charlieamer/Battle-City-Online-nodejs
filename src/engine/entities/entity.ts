@@ -1,20 +1,24 @@
-import { Renderable } from '../renderable';
 import { Transform } from '../transform';
+import { IRenderable } from '../interfaces/irenderable';
+import { IRenderer } from '../interfaces/irenderer';
 
 // Any entity that is on screen and that has its own update logic
 
-export abstract class Entity implements Renderable {
+export abstract class Entity implements IRenderable {
     transform: Transform;
 
-    abstract update();
-    abstract render();
+    parent: Entity;
+    children: Entity[] = [];
 
-    prepareRender(context: CanvasRenderingContext2D) {
-        context.save();
-        context.translate(this.transform.x, this.transform.y);
+    abstract update();
+    abstract render(renderer: IRenderer);
+
+    prepareRender(renderer: IRenderer) {
+        renderer.saveState();
+        renderer.translate(this.transform.position);
     }
-    cleanRender(context: CanvasRenderingContext2D) {
-        context.restore();
+    cleanRender(renderer: IRenderer) {
+        renderer.restoreState();
     }
 
 }

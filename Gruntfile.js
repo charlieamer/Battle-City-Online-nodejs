@@ -29,40 +29,26 @@ module.exports = function(grunt) {
         src: ['lib/**/*.js', 'test/**/*.js']
       }
     },
-    qunit: {
-      files: ['test/**/*.html']
-    },
     watch: {
-      gruntfile: {
-        files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
-      },
-      lib_test: {
-        files: '<%= jshint.lib_test.src %>',
-        tasks: ['clean', 'typescript', 'copy', 'http-server']
-      }
-    },
-    typescript: {
-      engine: {
-        src: ['src/engine/**/*.ts'],
-        dest: 'dist',
+      typescript: {
+        files: ['src/**/*.ts'],
+        tasks: ['default', 'connect'],
         options: {
-          references: ['typings/index.d.ts'],
-          module: "commonjs",
-          target: "es5",
-          noImplicitAny: false,
-          noResolve: false
+          interrupt: true,
+          atBegin: true,
+          spawn: true
         }
       }
     },
     typescript_project: {
       engine: {
         files: {
-          'dist/engine.js': ['src/engine/**/*.ts']
+          'dist/engine.js': ['src/engine/**/*.ts'],
+          'dist/platform-browser.js': ['src/platforms/browser/**/*.ts']
         },
-        options: {
-          tsconfig: true
-        }
+        options: Object.assign(JSON.parse(fs.readFileSync("tsconfig.json")), {
+          include: ["typings/**/*.d.ts"]
+        })
       }
     },
     clean: ['dist'],
@@ -75,8 +61,19 @@ module.exports = function(grunt) {
       }
     },
     'http-server': {
-      root: 'dist',
-      port: 8080
+      static: {
+        root: './dist/',
+        port: 8080,
+        host: '0.0.0.0'
+      }
+    },
+    connect: {
+      static: {
+        options: {
+          port: 8080,
+          base: 'dist'
+        }
+      }
     }
   });
 
@@ -85,11 +82,15 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-http-server');
-  grunt.loadNpmTasks('grunt-typescript');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  // grunt.loadNpmTasks('grunt-http-server');
   grunt.loadNpmTasks('grunt-typescript-project');
 
   // Default task.
   grunt.registerTask('default', ['clean', 'typescript_project', 'copy']);
-
+  grunt.registerTask('serve', ['default', 'watch:engine']);
+  
+  grunt.event.on('watch', function(action, filepath, target) {
+    grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
+  });
 };
