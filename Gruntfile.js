@@ -45,11 +45,23 @@ module.exports = function(grunt) {
     typescript: {
       engine: {
         src: ['src/engine/**/*.ts'],
-        references: ['typings/**/*.ts'],
         dest: 'dist',
         options: {
+          references: ['typings/index.d.ts'],
           module: "commonjs",
-          target: "es5"
+          target: "es5",
+          noImplicitAny: false,
+          noResolve: false
+        }
+      }
+    },
+    typescript_project: {
+      engine: {
+        files: {
+          'dist/engine.js': ['src/engine/**/*.ts']
+        },
+        options: {
+          tsconfig: true
         }
       }
     },
@@ -57,7 +69,8 @@ module.exports = function(grunt) {
     copy: {
       static: {
         expand: true,
-        src: ['static'],
+        src: ['**'],
+        cwd: 'static',
         dest: 'dist'
       }
     },
@@ -74,8 +87,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-http-server');
   grunt.loadNpmTasks('grunt-typescript');
+  grunt.loadNpmTasks('grunt-typescript-project');
 
   // Default task.
-  grunt.registerTask('default', ['clean', 'typescript', 'copy']);
+  grunt.registerTask('default', ['clean', 'typescript_project', 'copy']);
 
 };
