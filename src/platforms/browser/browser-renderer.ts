@@ -2,7 +2,7 @@ import { IRenderer } from '../../engine/interfaces/irenderer';
 import { Engine } from '../../engine/engine';
 
 export class BrowserRenderer implements IRenderer {
-    
+
     engine: Engine;
     context: CanvasRenderingContext2D;
     
@@ -22,7 +22,8 @@ export class BrowserRenderer implements IRenderer {
         window.requestAnimationFrame(this.refresh.bind(this));
     }
 
-    constructor(element: HTMLCanvasElement) {
+    constructor(element: HTMLCanvasElement, engine: Engine) {
+        this.engine = engine;
         this.context = element.getContext('2d');
         window.requestAnimationFrame(this.refresh.bind(this));
     }

@@ -1,5 +1,9 @@
 {
   "globalDependencies": {
-    "mathjs": "registry:dt/mathjs#0.0.0+20170126160507"
+    "mathjs": "registry:dt/mathjs#0.0.0+20170126160507",
+    "redux": "registry:dt/redux#3.5.2+20160703092728"
+  },
+  "dependencies": {
+    "clone": "registry:dt/clone#0.1.11+20160428043022"
   }
 }

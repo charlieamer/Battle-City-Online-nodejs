@@ -46,9 +46,12 @@ module.exports = function(grunt) {
           'dist/engine.js': ['src/engine/**/*.ts'],
           'dist/platform-browser.js': ['src/platforms/browser/**/*.ts']
         },
-        options: Object.assign(JSON.parse(fs.readFileSync("tsconfig.json")), {
-          include: ["typings/**/*.d.ts"]
-        })
+        // options: Object.assign(JSON.parse(fs.readFileSync("tsconfig.json")), {
+        //   include: ["typings/**/*.d.ts"]
+        // })
+        options: {
+          tsconfig: true
+        }
       }
     },
     clean: ['dist'],
