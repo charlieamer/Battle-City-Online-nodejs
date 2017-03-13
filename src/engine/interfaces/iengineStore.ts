@@ -1,7 +1,7 @@
 import { Entity } from '../entities/entity';
 
 export enum EngineStoreActions {
-    AddEntity, Update
+    AddEntity, Update, Init
 }
 
 export interface IEngineStore {

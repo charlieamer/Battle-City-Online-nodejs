@@ -22,10 +22,14 @@
             }
         </style>
         <script src="/require.js"></script>
+        <script src="/clone.js"></script>
     </head>
     <body>
         <canvas id="canvas"></canvas>
-        <script src="/engine.js"></script>
-        <script src="/platform-browser.js"></script>
+        <script>
+            requirejs(['./platforms/browser/browser-init'], function() {
+                console.log('hi');
+            });
+        </script>
     </body>
 </html>

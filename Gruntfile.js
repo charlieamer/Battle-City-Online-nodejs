@@ -31,8 +31,8 @@ module.exports = function(grunt) {
     },
     watch: {
       typescript: {
-        files: ['src/**/*.ts'],
-        tasks: ['default', 'connect'],
+        files: ['src/**/*.ts', 'tsconfig.json', 'static/**'],
+        tasks: ['typescript_project', 'copy'],
         options: {
           interrupt: true,
           atBegin: true,
@@ -41,14 +41,10 @@ module.exports = function(grunt) {
       }
     },
     typescript_project: {
-      engine: {
+      browser: {
         files: {
-          'dist/engine.js': ['src/engine/**/*.ts'],
-          'dist/platform-browser.js': ['src/platforms/browser/**/*.ts']
+          'dist': ['src/platforms/browser/**/*.ts']
         },
-        // options: Object.assign(JSON.parse(fs.readFileSync("tsconfig.json")), {
-        //   include: ["typings/**/*.d.ts"]
-        // })
         options: {
           tsconfig: true
         }
@@ -61,20 +57,27 @@ module.exports = function(grunt) {
         src: ['**'],
         cwd: 'static',
         dest: 'dist'
-      }
-    },
-    'http-server': {
-      static: {
-        root: './dist/',
-        port: 8080,
-        host: '0.0.0.0'
+      },
+      modules: {
+        expand: true,
+        src: ['redux/dist/redux.js', 'clone/clone.js'],
+        cwd: 'node_modules',
+        dest: 'dist',
+        flatten: true
+      },
+      sources: {
+        expand: true,
+        src: ['src/**'],
+        dest: 'dist'
       }
     },
     connect: {
       static: {
         options: {
           port: 8080,
-          base: 'dist'
+          base: 'dist',
+          keepalive: true,
+          debug: true
         }
       }
     }

@@ -21,6 +21,7 @@ export class Engine {
 
     constructor() {
         this.store = createStore<IEngineStore>(this.reducer.bind(this));
+        this.init();
     }
 
     update() {
@@ -36,16 +37,33 @@ export class Engine {
         })
     }
 
+    init() {
+        this.store.dispatch({
+            type: EngineStoreActions.Init
+        });
+    }
+
     reducer(state: IEngineStore = {
         entities: [],
         root: new EmptyEntity()
     }, action: any) {
-        let newState = clone(state);
+        let newState = state;
         switch (action.type) {
             case EngineStoreActions.AddEntity:
             this._addEntity(newState, action.value);
             break;
+
+            case EngineStoreActions.Init:
+            this._initState(newState);
+            break;
         }
+        return newState;
+    }
+
+    private _initState(state: IEngineStore) {
+        state.root = new EmptyEntity();
+        state.entities.push(state.root);
+        this._refreshChildren(state);
     }
 
     private _addEntity(state: IEngineStore, entity: Entity) {
@@ -53,6 +71,7 @@ export class Engine {
             entity.parent = state.root;
         }
         state.entities.push(entity);
+        this._refreshChildren(state);
     }
     
     private _refreshChildren(state: IEngineStore) {
