@@ -1,8 +1,6 @@
 import { IRenderer } from './irenderer';
 // Anything that could be rendered on screen (basically only entity extends this interface)
 export interface IRenderable {
-    // Update logic
-    update();
     // Do transforms on canvas before rendering
     prepareRender(renderer: IRenderer);
     // Draw the element on canvas

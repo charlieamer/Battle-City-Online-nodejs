@@ -3,7 +3,9 @@ import { Entity } from './entities/entity';
 import { EmptyEntity } from './entities/emptyEntity';
 import { createStore } from 'redux';
 import { IEngineStore, EngineStoreActions } from './interfaces/iengineStore';
-import clone = require('clone');
+import { IPrefab } from "./interfaces/iprefab";
+import { IIdentifier } from "./interfaces/iidentifier";
+import { Behaviour } from './behaviour';
 
 export class Engine {
 
@@ -30,11 +32,18 @@ export class Engine {
         });
     }
 
-    private addEntity(entity: Entity) {
+    registerPrefab<T extends Entity>(prefab: IPrefab<T>) {
         this.store.dispatch({
-            type: EngineStoreActions.AddEntity,
-            value: entity
-        })
+            type: EngineStoreActions.RegisterPrefab,
+            value: prefab
+        });
+    }
+
+    instantiatePrefab(prefabIdentifier: string) {
+        this.store.dispatch({
+            type: EngineStoreActions.InstantiatePrefab,
+            value: prefabIdentifier
+        });
     }
 
     init() {
@@ -43,25 +52,48 @@ export class Engine {
         });
     }
 
+    private addEntity(entity: Entity) {
+        this.store.dispatch({
+            type: EngineStoreActions.AddEntity,
+            value: entity
+        })
+    }
+
     reducer(state: IEngineStore = {
         entities: [],
-        root: new EmptyEntity()
+        root: undefined,
+        identifiers: {},
+        prefabs: {}
     }, action: any) {
-        let newState = state;
+        state = clone(state);
         switch (action.type) {
             case EngineStoreActions.AddEntity:
-            this._addEntity(newState, action.value);
+            this._addEntity(state, action.value);
             break;
 
             case EngineStoreActions.Init:
-            this._initState(newState);
+            this._initState(state);
             break;
 
             case EngineStoreActions.Update:
             this._update(state);
             break;
+
+            case EngineStoreActions.RegisterPrefab:
+            this._registerPrefab(state, action.value);
+            break;
+
+            case EngineStoreActions.InstantiatePrefab:
+            this._instantiatePrefab(state, action.value);
+            break;
+
+            case '@@redux/INIT':
+            break;
+
+            default:
+            throw new Error('Unknown action type: ' + action.type);
         }
-        return newState;
+        return state;
     }
 
     private _initState(state: IEngineStore) {
@@ -87,6 +119,30 @@ export class Engine {
     private _update(state: IEngineStore) {
         this.hierarchyForEachEntity((entity) => {
             entity.update();
-        });
+        }, state.root);
+    }
+
+    private _registerPrefab(state: IEngineStore, prefab: IPrefab<Entity>) {
+        this._addIdentifier(state, prefab);
+        state.prefabs[prefab.identifier] = prefab;
+    }
+
+    private _instantiatePrefab(state: IEngineStore, identifier: string) {
+        if (state.prefabs[identifier] === undefined) {
+            throw new Error('Prefab not found: ' + identifier);
+        }
+        let newEntity = new state.prefabs[identifier].entity();
+        this._addEntity(state, newEntity);
+        for (let behaviour of state.prefabs[identifier].behaviours) {
+            newEntity.addBehaviour(new behaviour(newEntity));
+        }
+    }
+
+    private _addIdentifier(state: IEngineStore, identifier: IIdentifier) {
+        if (state.identifiers[identifier.identifier] !== undefined) {
+            throw new Error('Identifier ' + identifier.identifier + ' already exists!');
+        } else {
+            state.identifiers[identifier.identifier] = identifier;
+        }
     }
 }

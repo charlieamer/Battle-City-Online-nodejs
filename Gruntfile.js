@@ -43,7 +43,7 @@ module.exports = function(grunt) {
     typescript_project: {
       browser: {
         files: {
-          'dist': ['src/platforms/browser/**/*.ts', 'src/engine/**/*.ts', 'src/game/**/*.ts']
+          'dist': ['src/platforms/browser/**/*.ts', 'src/engine/**/*.ts', 'src/game/**/*.ts', 'global.d.ts']
         },
         options: {
           tsconfig: true

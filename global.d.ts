@@ -1,0 +1,1 @@
+declare function clone<T>(val: T, circular?: boolean, depth?: number): T
