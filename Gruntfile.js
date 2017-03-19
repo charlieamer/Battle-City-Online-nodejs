@@ -32,7 +32,7 @@ module.exports = function(grunt) {
     watch: {
       typescript: {
         files: ['src/**/*.ts', 'tsconfig.json', 'static/**'],
-        tasks: ['typescript_project', 'copy'],
+        tasks: ['default'],
         options: {
           interrupt: true,
           atBegin: true,
@@ -43,14 +43,14 @@ module.exports = function(grunt) {
     typescript_project: {
       browser: {
         files: {
-          'dist': ['src/platforms/browser/**/*.ts']
+          'dist': ['src/platforms/browser/**/*.ts', 'src/engine/**/*.ts', 'src/game/**/*.ts']
         },
         options: {
           tsconfig: true
         }
       }
     },
-    clean: ['dist'],
+    clean: ['dist/**'],
     copy: {
       static: {
         expand: true,
@@ -60,7 +60,7 @@ module.exports = function(grunt) {
       },
       modules: {
         expand: true,
-        src: ['redux/dist/redux.js', 'clone/clone.js'],
+        src: ['redux/dist/redux.js', 'clone/clone.js', 'mathjs/dist/math.js'],
         cwd: 'node_modules',
         dest: 'dist',
         flatten: true

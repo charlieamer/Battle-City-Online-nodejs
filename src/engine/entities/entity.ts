@@ -1,12 +1,13 @@
 import { Transform } from '../transform';
 import { IRenderable } from '../interfaces/irenderable';
 import { IRenderer } from '../interfaces/irenderer';
+import { Bounds } from "../bounds";
 
 // Any entity that is on screen and that has its own update logic
 
 export abstract class Entity implements IRenderable {
     transform: Transform;
-
+    bounds: Bounds;
     parent: Entity;
     children: Entity[] = [];
 
@@ -19,6 +20,11 @@ export abstract class Entity implements IRenderable {
     }
     cleanRender(renderer: IRenderer) {
         renderer.restoreState();
+    }
+
+    constructor() {
+        this.bounds = new Bounds();
+        this.transform = new Transform();
     }
 
 }

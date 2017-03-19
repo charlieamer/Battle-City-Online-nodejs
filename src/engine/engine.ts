@@ -30,7 +30,7 @@ export class Engine {
         });
     }
 
-    addEntity(entity: Entity) {
+    private addEntity(entity: Entity) {
         this.store.dispatch({
             type: EngineStoreActions.AddEntity,
             value: entity
@@ -55,6 +55,10 @@ export class Engine {
 
             case EngineStoreActions.Init:
             this._initState(newState);
+            break;
+
+            case EngineStoreActions.Update:
+            this._update(state);
             break;
         }
         return newState;
