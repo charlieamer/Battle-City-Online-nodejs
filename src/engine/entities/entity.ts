@@ -3,6 +3,7 @@ import { IRenderable } from '../interfaces/irenderable';
 import { IRenderer } from '../interfaces/irenderer';
 import { Bounds } from "../bounds";
 import { Behaviour } from '../behaviour';
+import { Engine } from '../engine';
 
 // Any entity that is on screen and that has its own update logic
 
@@ -11,6 +12,7 @@ export abstract class Entity implements IRenderable {
     bounds: Bounds;
     parent: Entity;
     children: Entity[] = [];
+    engine: Engine;
     private behaviours: Behaviour<Entity>[] = [];
 
     abstract render(renderer: IRenderer);

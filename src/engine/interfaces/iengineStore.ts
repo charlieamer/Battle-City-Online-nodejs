@@ -3,7 +3,7 @@ import { IIdentifier } from "./iidentifier";
 import { IPrefab } from "./iprefab";
 
 export enum EngineStoreActions {
-    AddEntity, Update, Init, RegisterPrefab, InstantiatePrefab
+    AddEntity, Update, Init, RegisterPrefab, InstantiatePrefab, BehaviourEvent
 }
 
 export interface IEngineStore {
