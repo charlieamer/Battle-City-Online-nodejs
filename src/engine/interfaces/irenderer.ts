@@ -6,7 +6,7 @@ export interface IRenderer {
     saveState();
     restoreState();
 
-    rectangle(lower: mathjs.Matrix, upper: mathjs.Matrix);
+    rectangle(lower: mathjs.Matrix, upper: mathjs.Matrix, color: number[]);
 
     engine: Engine;
 }

@@ -31,8 +31,9 @@ export class BrowserRenderer implements IRenderer {
         window.requestAnimationFrame(this.refresh.bind(this));
     }
 
-    rectangle(from: mathjs.Matrix, to: mathjs.Matrix) {
-        this.context.fillStyle = '#ff0000';
-        this.context.fillRect(from.get([0]), from.get([1]), to.get([0]), to.get([1]));
+    rectangle(from: mathjs.Matrix, to: mathjs.Matrix, color: number[]) {
+        this.context.fillStyle = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] +')';
+        let dimensions = <mathjs.Matrix>math.subtract(to, from);
+        this.context.fillRect(from.get([0]), from.get([1]), dimensions.get([0]), dimensions.get([1]));
     }
 }

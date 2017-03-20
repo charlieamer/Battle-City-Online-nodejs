@@ -1,11 +1,15 @@
 import { Entity } from "./entity";
 import { IRenderer } from "../interfaces/irenderer";
+import { ICollidable } from "../interfaces/icollidable";
 
-export class RectangleEntity extends Entity {
+export class RectangleEntity extends Entity implements ICollidable {
+    public color = [0, 0, 0];
+
     render(renderer: IRenderer) {
-        const halfSize = math.divide(this.bounds.size, 2);
-        const from = <mathjs.Matrix>math.subtract(this.bounds.center, halfSize);
-        const to = <mathjs.Matrix>math.add(this.bounds.center, halfSize);
-        renderer.rectangle(from, to);
+        renderer.rectangle(this.bounds.upperLeft, this.bounds.lowerRight, this.color);
+    }
+
+    isCollidingWith(other: Entity): boolean {
+        return other.bounds.isColliding(this.bounds);
     }
 }

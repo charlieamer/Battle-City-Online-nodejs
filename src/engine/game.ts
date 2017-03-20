@@ -1,5 +1,5 @@
 import { Engine } from './engine';
-export class Game {
+export abstract class Game {
     private finishedFrames: number;
     protected startTimestamp: number;
 
@@ -8,6 +8,7 @@ export class Game {
     start() {
         this.startTimestamp = new Date().getTime();
         this.finishedFrames = 0;
+        this.init();
         this.refresh();
     }
 
@@ -20,4 +21,6 @@ export class Game {
         }
         setTimeout(this.refresh.bind(this), 1000 / this.desiredFps);
     }
+
+    abstract init();
 }

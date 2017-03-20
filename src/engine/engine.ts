@@ -39,10 +39,11 @@ export class Engine {
         });
     }
 
-    instantiatePrefab(prefabIdentifier: string) {
+    instantiatePrefab(prefabIdentifier: string, ...args) {
         this.store.dispatch({
             type: EngineStoreActions.InstantiatePrefab,
-            value: prefabIdentifier
+            value: prefabIdentifier,
+            args: args
         });
     }
 
@@ -86,7 +87,7 @@ export class Engine {
             break;
 
             case EngineStoreActions.InstantiatePrefab:
-            this._instantiatePrefab(state, action.value);
+            this._instantiatePrefab(state, action.value, action.args);
             break;
 
             case EngineStoreActions.BehaviourEvent:
@@ -125,6 +126,7 @@ export class Engine {
         }
         state.entities.push(entity);
         entity.engine = this;
+        this._addIdentifier(state, entity);
         this._refreshChildren(state);
     }
     
@@ -145,11 +147,11 @@ export class Engine {
         state.prefabs[prefab.identifier] = prefab;
     }
 
-    private _instantiatePrefab(state: IEngineStore, identifier: string) {
+    private _instantiatePrefab(state: IEngineStore, identifier: string, args: any[]) {
         if (state.prefabs[identifier] === undefined) {
             throw new Error('Prefab not found: ' + identifier);
         }
-        let newEntity = new state.prefabs[identifier].entity();
+        let newEntity = new (Function.prototype.bind.apply(state.prefabs[identifier].entity, [null, ...args]));
         this._addEntity(state, newEntity);
         for (let behaviour of state.prefabs[identifier].behaviours) {
             let newBehaviour = new behaviour(newEntity);
